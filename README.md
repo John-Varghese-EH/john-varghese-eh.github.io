@@ -104,9 +104,3 @@
 </div>
 
 ---
-
-## 📊 Visitor Count
-
-<p align="center">
-  <img src="https://profile-counter.glitch.me/John-Varghese-EH/count.svg" alt="Visitor Count" />
-</p>
