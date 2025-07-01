@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" webcrx="" class=" qjfkfdnjxp idc0_350"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Work in Progress | John Varghese</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./index_files/john-circular-logo.gif" type="image/gif">
+  <link rel="stylesheet" href="./index_files/all.min.css">
+  <style>
+    :root {
+      --accent1: #00ffe7;
+      --accent2: #6c47ff;
+      --accent3: #ff4ecd;
+      --bg-dark: #181a24;
+      --glass: rgba(24, 26, 36, 0.85);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      --radius: 20px;
+      --font: "Poppins", "Segoe UI", Arial, sans-serif;
+    }
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      background: var(--bg-dark);
+      color: #fff;
+      font-family: var(--font);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background: linear-gradient(
+        120deg,
+        var(--accent1),
+        var(--accent2),
+        var(--accent3),
+        var(--accent1)
+      );
+      background-size: 300% 300%;
+      animation: gradientMove 8s ease-in-out infinite alternate;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+    .wip-container {
+      position: relative;
+      z-index: 1;
+      background: var(--glass);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+      max-width: 400px;
+      width: 95vw;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .wip-logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 24px var(--accent2), 0 0 0 4px var(--accent1);
+      background: #fff;
+      display: inline-block;
+    }
+    .wip-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 0.7rem;
+      background: linear-gradient(
+        90deg,
+        var(--accent1),
+        var(--accent2),
+        var(--accent3)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .wip-msg {
+      font-size: 1.15rem;
+      color: #dbeafe;
+      margin-bottom: 2.2rem;
+      line-height: 1.7;
+    }
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2.2rem;
+      gap: 2.5rem; /* Increased gap for more padding around icons */
+    }
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        var(--accent1),
+        var(--accent2),
+        var(--accent3)
+      );
+      box-shadow: 0 2px 10px rgba(108, 71, 255, 0.13);
+      color: #fff;
+      font-size: 1.7rem;
+      transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+      text-decoration: none;
+      border: none;
+      outline: none;
+      padding: 8px; /* Added padding around icons */
+      box-sizing: content-box;
+    }
+    .social-btn:hover {
+      transform: scale(1.5) rotate(-6deg);
+      box-shadow: 0 4px 24px var(--accent3);
+      background: linear-gradient(
+        135deg,
+        var(--accent3),
+        var(--accent2),
+        var(--accent1)
+      );
+      color: #fff;
+    }
+    .wip-thanks {
+      margin-top: 1.5rem;
+      font-size: 1.05rem;
+      color: #a5f3fc;
+      background: rgba(0, 255, 231, 0.08);
+      border-radius: 12px;
+      padding: 0.7rem 1.2rem;
+      display: inline-flex;
+      align-items: center;
+      font-style: italic;
+      box-shadow: 0 1px 8px rgba(0, 255, 231, 0.05);
+      gap: 0.6em;
+    }
+    .wip-thanks .heart-animated {
+      color: #ff2c44;
+      font-size: 1.2em;
+      animation: heartbeat 1.8s infinite ease-in-out;
+      display: inline-block;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+    @keyframes heartbeat {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.25);
+      }
+      50% {
+        transform: scale(1);
+      }
+      75% {
+        transform: scale(1.15);
+      }
+    }
+    @media (max-width: 600px) {
+      .wip-container {
+        padding: 2rem 0.7rem 1.5rem 0.7rem;
+        max-width: 98vw;
+      }
+      .wip-title {
+        font-size: 1.35rem;
+      }
+      .wip-msg {
+        font-size: 1rem;
+      }
+      .wip-logo {
+        width: 70px;
+        height: 70px;
+      }
+      .social-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+        padding: 6px;
+      }
+      .social-buttons {
+        gap: 2rem;
+      }
+    }
+  </style>
+<script src="blob:https://cybertrinity.neocities.org/3ef3d075-22ae-4abb-bf39-7ed29101857b"></script></head>
+<body>
+  <div class="gradient-bg"></div>
+  <div class="wip-container">
+    <img src="./index_files/john-circular-logo.gif" alt="John Varghese Logo" class="wip-logo">
+    <div class="wip-title">Work in Progress</div>
+    <div class="wip-msg">
+      This site is currently being crafted to perfection.<br>
+      Meanwhile, let’s connect!
+    </div>
+    <div class="social-buttons">
+      <a class="social-btn" href="https://instagram.com/cyber__trinity" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a class="social-btn" href="https://www.linkedin.com/in/john--varghese" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a class="social-btn" href="mailto:CyberTrinity@Mail2Tor.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+    <div class="wip-thanks">
+      <span class="heart-animated"><i class="fas fa-heart"></i></span>
+      Thanks for visiting!
+    </div>
+  </div>
+
+
+<protonpass-root-ff1e data-protonpass-role="root" data-protonpass-theme="os"><template shadowrootmode="closed"></template></protonpass-root-ff1e></body></html>
