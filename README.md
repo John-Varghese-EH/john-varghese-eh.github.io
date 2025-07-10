@@ -1,6 +1,6 @@
 <!-- John Varghese -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/main/.github/assets/CyberTrinity-banner.svg" alt="Cyber_Trinity(John) Animated Banner" height="20%" width="100%" />
+  <img src="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/main/.github/assets/CyberTrinity-banner.svg" alt="Cyber_Trinity(John) Animated Banner" width="100%" />
 </p>
 
 ## I'm John Varghese aka? @Cyber_Trinity (J0X)
