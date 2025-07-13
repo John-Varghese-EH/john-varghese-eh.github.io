@@ -292,10 +292,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <span class="scroll-text">Scroll to explore</span>
+        </div>
     </section>
 
     <!-- About Section -->
-    <section class="about-section">
+    <section class="about-section" id="about">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
@@ -351,7 +359,7 @@
     </section>
 
     <!-- Repository Section -->
-    <section class="repos-section">
+    <section class="repos-section" id="repositories">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
@@ -380,7 +388,7 @@
     </section>
 
     <!-- GitHub Activity Section -->
-    <section class="activity-section">
+    <section class="activity-section" id="activity">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
@@ -425,22 +433,18 @@
                     </div>
                 </div>
                 
-                <!-- Snake Game -->
+                <!-- GitHub Snake -->
                 <div class="snake-section">
                     <h3 class="subsection-title">
                         <i class="fas fa-gamepad"></i>
                         Contribution Snake
                     </h3>
                     <div class="snake-container">
-                        <div class="snake-game" id="snakeGame">
-                            <canvas id="snakeCanvas" width="800" height="400"></canvas>
-                            <div class="snake-overlay">
-                                <div class="snake-info">
-                                    <span>Contributions: <span id="snakeScore">0</span></span>
-                                    <span>Streak: <span id="snakeStreak">0</span> days</span>
-                                </div>
-                            </div>
-                        </div>
+                        <picture>
+                            <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake-dark.svg" />
+                            <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg" />
+                            <img alt="github-snake" src="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg" class="snake-image" />
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -448,7 +452,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section class="contact-section">
+    <section class="contact-section" id="contact">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
