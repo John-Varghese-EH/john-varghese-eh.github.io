@@ -18,9 +18,6 @@ const errorMessage = document.getElementById('errorMessage');
 const bentoContainer = document.getElementById('bentoContainer');
 const commitsContainer = document.getElementById('commitsContainer');
 const contributionGraph = document.getElementById('contributionGraph');
-const snakeCanvas = document.getElementById('snakeCanvas');
-const snakeScore = document.getElementById('snakeScore');
-const snakeStreak = document.getElementById('snakeStreak');
 
 // Typing animation texts
 const typingTexts = [
@@ -544,7 +541,6 @@ async function loadContributions() {
         const cachedContributions = getCachedData(CACHE_KEYS.contributions);
         if (cachedContributions) {
             showContributions(cachedContributions);
-            initSnakeGame(cachedContributions);
             return;
         }
         
@@ -553,7 +549,6 @@ async function loadContributions() {
         
         setCachedData(CACHE_KEYS.contributions, contributions);
         showContributions(contributions);
-        initSnakeGame(contributions);
         
     } catch (error) {
         console.error('Error loading contributions:', error);
@@ -622,10 +617,6 @@ function showContributions(contributions) {
         
         grid.appendChild(dayElement);
     });
-    
-    // Update snake game stats
-    if (snakeScore) snakeScore.textContent = totalContributions;
-    if (snakeStreak) snakeStreak.textContent = currentStreak;
 }
 
 function calculateStreak(contributions) {
@@ -649,115 +640,6 @@ function showContributionsError() {
             <p>Unable to load contribution data.</p>
         </div>
     `;
-}
-
-// Snake Game
-function initSnakeGame(contributions) {
-    if (!snakeCanvas) return;
-    
-    const ctx = snakeCanvas.getContext('2d');
-    const gridSize = 20;
-    const tileCount = snakeCanvas.width / gridSize;
-    
-    let snake = [{ x: 10, y: 10 }];
-    let food = { x: 15, y: 15 };
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
-    
-    // Convert contributions to food positions
-    const foodPositions = contributions
-        .filter(day => day.count > 0)
-        .map((day, index) => ({
-            x: (index % Math.floor(tileCount)) + 1,
-            y: Math.floor(index / Math.floor(tileCount)) + 1,
-            count: day.count
-        }))
-        .slice(0, 50); // Limit food positions
-    
-    let currentFoodIndex = 0;
-    
-    function drawGame() {
-        // Clear canvas
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
-        
-        // Draw snake
-        ctx.fillStyle = '#00ff41';
-        snake.forEach(segment => {
-            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 2, gridSize - 2);
-        });
-        
-        // Draw food
-        ctx.fillStyle = '#39ff14';
-        ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
-        
-        // Draw contribution visualization
-        ctx.fillStyle = 'rgba(0, 255, 65, 0.1)';
-        foodPositions.forEach(pos => {
-            if (pos.x !== food.x || pos.y !== food.y) {
-                ctx.fillRect(pos.x * gridSize, pos.y * gridSize, gridSize - 2, gridSize - 2);
-            }
-        });
-    }
-    
-    function updateGame() {
-        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-        
-        // Check wall collision
-        if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-            resetGame();
-            return;
-        }
-        
-        // Check self collision
-        if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-            resetGame();
-            return;
-        }
-        
-        snake.unshift(head);
-        
-        // Check food collision
-        if (head.x === food.x && head.y === food.y) {
-            score++;
-            currentFoodIndex = (currentFoodIndex + 1) % foodPositions.length;
-            food = foodPositions[currentFoodIndex] || { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
-        } else {
-            snake.pop();
-        }
-        
-        drawGame();
-    }
-    
-    function resetGame() {
-        snake = [{ x: 10, y: 10 }];
-        dx = 0;
-        dy = 0;
-        score = 0;
-        currentFoodIndex = 0;
-        food = foodPositions[0] || { x: 15, y: 15 };
-    }
-    
-    // Auto-play the snake game
-    function autoPlay() {
-        // Simple AI to move towards food
-        const head = snake[0];
-        
-        if (head.x < food.x) dx = 1, dy = 0;
-        else if (head.x > food.x) dx = -1, dy = 0;
-        else if (head.y < food.y) dx = 0, dy = 1;
-        else if (head.y > food.y) dx = 0, dy = -1;
-        
-        updateGame();
-    }
-    
-    // Initialize game
-    resetGame();
-    drawGame();
-    
-    // Start auto-play
-    setInterval(autoPlay, 200);
 }
 
 // Utility Functions
