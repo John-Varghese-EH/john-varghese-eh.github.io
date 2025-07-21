@@ -402,6 +402,9 @@ function createRepoCard(repo) {
             <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-title">
                 ${repo.name}
             </a>
+            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="github-icon">
+                <i class="fab fa-github"></i>
+            </a>
         </div>
         <p class="repo-description">
             ${repo.description || 'No description available'}
@@ -427,8 +430,9 @@ function createRepoCard(repo) {
         ${repo.language ? `<span class="repo-language" style="background-color: ${languageColor}20; color: ${languageColor}; border: 1px solid ${languageColor}40;">${repo.language}</span>` : ''}
     `;
     
-    // Add 3D hover effect
+    // Add 3D hover effect and laptop content update
     card.addEventListener('mouseenter', () => {
+        updateProjectLaptop(repo.name);
         card.addEventListener('mousemove', handleMouseMove);
     });
     
@@ -437,6 +441,11 @@ function createRepoCard(repo) {
         card.style.transform = '';
     });
     
+    // Show project description on click
+    card.addEventListener('click', () => {
+        showProjectDescription(repo);
+    });
+
     function handleMouseMove(e) {
         const rect = card.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -449,6 +458,38 @@ function createRepoCard(repo) {
     }
     
     return card;
+}
+
+function updateProjectLaptop(projectName) {
+    const laptopTypingElement = document.querySelector('#projectLaptop .typing-animation');
+    if (laptopTypingElement) {
+        laptopTypingElement.textContent = `ls -la ${projectName}`;
+    }
+}
+
+function showProjectDescription(repo) {
+    const modal = document.createElement('div');
+    modal.className = 'project-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>${repo.name}</h2>
+            <p>${repo.description || 'No description available.'}</p>
+            <a href="${repo.html_url}" target="_blank" class="btn-primary">View on GitHub</a>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeModal = modal.querySelector('.close-modal');
+    closeModal.addEventListener('click', () => {
+        modal.remove();
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
 }
 
 // Recent Commits
@@ -467,16 +508,17 @@ async function loadRecentCommits() {
         
         const events = await response.json();
         const pushEvents = events
-            .filter(event => event.type === 'PushEvent')
-            .slice(0, 10)
-            .map(event => ({
-                id: event.id,
+            .filter(event => event.type === 'PushEvent' && event.payload.commits.length > 0)
+            .flatMap(event => event.payload.commits.map(commit => ({
+                id: commit.sha,
                 repo: event.repo.name,
-                message: event.payload.commits[0]?.message || 'No commit message',
+                message: commit.message,
                 date: event.created_at,
                 avatar: event.actor.avatar_url,
                 author: event.actor.login
-            }));
+            })))
+            .filter(commit => !commit.message.toLowerCase().includes('readme') && !commit.message.toLowerCase().includes('license') && commit.author.toLowerCase() !== 'jules')
+            .slice(0, 10);
         
         setCachedData(CACHE_KEYS.commits, pushEvents);
         showCommits(pushEvents);
@@ -586,6 +628,10 @@ function showContributions(contributions) {
                 <span class="stat-label">Total Contributions</span>
             </div>
             <div class="stat-item">
+                <span class="stat-value" id="totalContributions">1337</span>
+                <span class="stat-label">Total Contributions</span>
+            </div>
+            <div class="stat-item">
                 <span class="stat-value">${currentStreak}</span>
                 <span class="stat-label">Current Streak</span>
             </div>
@@ -678,22 +724,10 @@ function getLanguageColor(language) {
         'Ruby': '#701516',
         'Dart': '#00B4AB',
         'Vue': '#4FC08D',
-        'React': '#61DAFB'
+        'React': '#61DAFB',
+        'default': '#00ff41'
     };
-    return colors[language] || '#00ff41';
-}
-
-// Performance optimization
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+    return colors[language] || colors['default'];
 }
 
 // Handle visibility change
@@ -715,6 +749,78 @@ window.addEventListener('online', () => {
     console.log('Connection restored, refreshing data...');
     loadGitHubData();
 });
+
+// Terminal
+const terminalButton = document.getElementById('terminal-button');
+const terminalWindow = document.getElementById('terminal-window');
+const terminalInput = document.getElementById('terminal-input');
+const terminalBody = document.getElementById('terminal-body');
+
+terminalButton.addEventListener('click', () => {
+    terminalWindow.style.display = 'flex';
+});
+
+terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const command = terminalInput.value;
+        terminalInput.value = '';
+        const output = document.createElement('div');
+        output.className = 'terminal-line';
+        output.innerHTML = `<span class="prompt">└─$ </span><span class="command">${command}</span>`;
+        terminalBody.appendChild(output);
+        handleCommand(command);
+    }
+});
+
+function handleCommand(command) {
+    const output = document.createElement('div');
+    output.className = 'terminal-line';
+    switch (command) {
+        case 'help':
+            output.innerHTML = `
+                <span>Available commands:</span>
+                <ul>
+                    <li>help - Show this help message</li>
+                    <li>ls - List files</li>
+                    <li>whoami - Display user information</li>
+                    <li>clear - Clear the terminal</li>
+                    <li>exit - Close the terminal</li>
+                </ul>
+            `;
+            break;
+        case 'ls':
+            output.innerHTML = '<span>index.html styles.css script.js</span>';
+            break;
+        case 'whoami':
+            output.innerHTML = '<span>guest</span>';
+            break;
+        case 'clear':
+            terminalBody.innerHTML = `
+                <div class="terminal-line">
+                    <span class="prompt">┌──(root㉿cyber-trinity)-[~]</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">└─$ </span>
+                    <input type="text" class="terminal-input" id="terminal-input">
+                </div>
+            `;
+            return;
+        case 'exit':
+            terminalWindow.style.display = 'none';
+            return;
+        default:
+            output.innerHTML = `<span>Command not found: ${command}</span>`;
+    }
+    terminalBody.appendChild(output);
+    const newLine = document.createElement('div');
+    newLine.className = 'terminal-line';
+    newLine.innerHTML = `
+        <span class="prompt">└─$ </span>
+        <input type="text" class="terminal-input" id="terminal-input">
+    `;
+    terminalBody.appendChild(newLine);
+    newLine.querySelector('.terminal-input').focus();
+}
 
 window.addEventListener('offline', () => {
     console.log('Connection lost, using cached data');
