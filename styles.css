@@ -863,6 +863,31 @@ body {
     box-shadow: 0 15px 40px rgba(0, 255, 65, 0.3);
 }
 
+.terminal-window {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 600px;
+    height: 400px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid var(--primary-green);
+    border-radius: var(--border-radius-lg);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 0 50px var(--shadow-green);
+}
+
+.terminal-input {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    width: 100%;
+    outline: none;
+}
+
 .social-links {
     display: flex;
     gap: 1.5rem;
@@ -1149,6 +1174,11 @@ body {
     }
 }
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Repository Section */
 .loading-spinner {
     display: flex;
@@ -1174,11 +1204,6 @@ body {
     border-top: 4px solid var(--primary-green);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 .error-message {

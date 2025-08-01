@@ -517,7 +517,7 @@ async function loadRecentCommits() {
                 avatar: event.actor.avatar_url,
                 author: event.actor.login
             })))
-            .filter(commit => !commit.message.toLowerCase().includes('readme') && !commit.message.toLowerCase().includes('license'))
+            .filter(commit => !commit.message.toLowerCase().includes('readme') && !commit.message.toLowerCase().includes('license') && commit.author.toLowerCase() !== 'jules')
             .slice(0, 10);
         
         setCachedData(CACHE_KEYS.commits, pushEvents);
@@ -724,22 +724,10 @@ function getLanguageColor(language) {
         'Ruby': '#701516',
         'Dart': '#00B4AB',
         'Vue': '#4FC08D',
-        'React': '#61DAFB'
+        'React': '#61DAFB',
+        'default': '#00ff41'
     };
-    return colors[language] || '#00ff41';
-}
-
-// Performance optimization
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+    return colors[language] || colors['default'];
 }
 
 // Handle visibility change
@@ -761,6 +749,78 @@ window.addEventListener('online', () => {
     console.log('Connection restored, refreshing data...');
     loadGitHubData();
 });
+
+// Terminal
+const terminalButton = document.getElementById('terminal-button');
+const terminalWindow = document.getElementById('terminal-window');
+const terminalInput = document.getElementById('terminal-input');
+const terminalBody = document.getElementById('terminal-body');
+
+terminalButton.addEventListener('click', () => {
+    terminalWindow.style.display = 'flex';
+});
+
+terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const command = terminalInput.value;
+        terminalInput.value = '';
+        const output = document.createElement('div');
+        output.className = 'terminal-line';
+        output.innerHTML = `<span class="prompt">└─$ </span><span class="command">${command}</span>`;
+        terminalBody.appendChild(output);
+        handleCommand(command);
+    }
+});
+
+function handleCommand(command) {
+    const output = document.createElement('div');
+    output.className = 'terminal-line';
+    switch (command) {
+        case 'help':
+            output.innerHTML = `
+                <span>Available commands:</span>
+                <ul>
+                    <li>help - Show this help message</li>
+                    <li>ls - List files</li>
+                    <li>whoami - Display user information</li>
+                    <li>clear - Clear the terminal</li>
+                    <li>exit - Close the terminal</li>
+                </ul>
+            `;
+            break;
+        case 'ls':
+            output.innerHTML = '<span>index.html styles.css script.js</span>';
+            break;
+        case 'whoami':
+            output.innerHTML = '<span>guest</span>';
+            break;
+        case 'clear':
+            terminalBody.innerHTML = `
+                <div class="terminal-line">
+                    <span class="prompt">┌──(root㉿cyber-trinity)-[~]</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">└─$ </span>
+                    <input type="text" class="terminal-input" id="terminal-input">
+                </div>
+            `;
+            return;
+        case 'exit':
+            terminalWindow.style.display = 'none';
+            return;
+        default:
+            output.innerHTML = `<span>Command not found: ${command}</span>`;
+    }
+    terminalBody.appendChild(output);
+    const newLine = document.createElement('div');
+    newLine.className = 'terminal-line';
+    newLine.innerHTML = `
+        <span class="prompt">└─$ </span>
+        <input type="text" class="terminal-input" id="terminal-input">
+    `;
+    terminalBody.appendChild(newLine);
+    newLine.querySelector('.terminal-input').focus();
+}
 
 window.addEventListener('offline', () => {
     console.log('Connection lost, using cached data');
