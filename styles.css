@@ -720,7 +720,6 @@ body {
     margin-bottom: 2rem;
     background: linear-gradient(45deg, var(--primary-green), var(--accent-green), var(--secondary-green));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: 0 0 30px var(--shadow-green);
     -webkit-filter: blur(0);
