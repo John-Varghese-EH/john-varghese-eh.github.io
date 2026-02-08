@@ -1,45 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="John Varghese - Cybersecurity Expert & Digital Innovation Specialist | Futuristic Portfolio">
-    <meta name="keywords" content="cybersecurity, ethical hacking, digital innovation, portfolio, john varghese, cyber trinity">
+
+    <!-- Primary Meta Tags -->
+    <title>John Varghese | Cybersecurity Expert & Ethical Hacker</title>
+    <meta name="title" content="John Varghese | Cybersecurity Expert & Ethical Hacker">
+    <meta name="description"
+        content="Elite cybersecurity specialist & ethical hacker with expertise in penetration testing, vulnerability assessment, and digital security solutions. Explore my portfolio and projects.">
+    <meta name="keywords"
+        content="cybersecurity, ethical hacking, penetration testing, security researcher, John Varghese, Cyber Trinity, vulnerability assessment, network security, infosec">
     <meta name="author" content="John Varghese">
-    <meta property="og:title" content="John Varghese | Cyber Trinity Portfolio">
-    <meta property="og:description" content="Cybersecurity Expert & Digital Innovation Specialist">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://john-varghese-eh.github.io">
+
+    <!-- Theme & Browser -->
+    <meta name="theme-color" content="#00ff41">
+    <meta name="msapplication-TileColor" content="#0a0a0a">
+    <meta name="msapplication-navbutton-color" content="#00ff41">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="John Varghese">
+
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://john-varghese-eh.github.io">
-    
-    <title>John Varghese | Cyber Trinity - Futuristic Portfolio</title>
-    <link rel="icon" href="./src/john_profile.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta property="og:title" content="John Varghese | Cybersecurity Expert & Ethical Hacker">
+    <meta property="og:description"
+        content="Elite cybersecurity specialist with expertise in penetration testing, ethical hacking, and digital security solutions.">
+    <meta property="og:image" content="https://john-varghese-eh.github.io/src/john_profile.png">
+    <meta property="og:image:alt" content="John Varghese - Cybersecurity Expert">
+    <meta property="og:site_name" content="John Varghese Portfolio">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://john-varghese-eh.github.io">
+    <meta name="twitter:title" content="John Varghese | Cybersecurity Expert & Ethical Hacker">
+    <meta name="twitter:description"
+        content="Elite cybersecurity specialist with expertise in penetration testing, ethical hacking, and digital security solutions.">
+    <meta name="twitter:image" content="https://john-varghese-eh.github.io/src/john_profile.png">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="./src/john_profile.png">
+    <link rel="apple-touch-icon" href="./src/john_profile.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+
+    <!-- Preconnect to External Domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://api.github.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="./src/john_profile.png" as="image">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "John Varghese",
+        "alternateName": "Cyber Trinity",
+        "url": "https://john-varghese-eh.github.io",
+        "image": "https://john-varghese-eh.github.io/src/john_profile.png",
+        "description": "Cybersecurity Expert & Ethical Hacker specializing in penetration testing and digital security solutions",
+        "jobTitle": "Cybersecurity Specialist",
+        "knowsAbout": ["Cybersecurity", "Penetration Testing", "Ethical Hacking", "Network Security", "Vulnerability Assessment"],
+        "sameAs": [
+            "https://github.com/John-Varghese-EH",
+            "https://linkedin.com/in/John--Varghese",
+            "https://instagram.com/Cyber__Trinity",
+            "https://youtube.com/@Trendy_NED",
+            "https://johnvarghese.netlify.app"
+        ]
+    }
+    </script>
+
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8677993686258928"
-         crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
+    <!-- Skip to Content Link for Accessibility -->
+    <a href="#about" class="skip-link">Skip to main content</a>
+
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-ring"></div>
+            <span class="loader-text">Initializing...</span>
+        </div>
+    </div>
+
     <!-- Cursor Trail -->
-    <div class="cursor-trail"></div>
-    <div class="cursor-glow"></div>
-    
+    <div class="cursor-trail" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+
     <!-- Matrix Background -->
-    <div class="matrix-background">
+    <div class="matrix-background" aria-hidden="true">
         <canvas id="matrixCanvas"></canvas>
     </div>
 
     <!-- Hero Section with 3D Elements -->
-    <section class="hero-section">
-        <div class="hero-background">
+    <section class="hero-section" aria-label="Hero">
+        <div class="hero-background" aria-hidden="true">
             <div class="floating-particles"></div>
             <div class="neural-network"></div>
         </div>
-        
+
         <!-- 3D Floating Elements -->
         <div class="floating-elements">
             <!-- Floating Laptop -->
@@ -84,7 +173,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Floating Browser with HTB -->
             <div class="floating-browser" data-speed="0.3">
                 <div class="browser-frame">
@@ -145,7 +234,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Floating Code Editor -->
             <div class="floating-code-editor" data-speed="0.7">
                 <div class="editor-frame">
@@ -176,7 +265,8 @@
                         </div>
                         <div class="code-line">
                             <span class="line-number">3</span>
-                            <span class="code"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span>
+                            <span class="code"><span class="keyword">from</span> pwn <span class="keyword">import</span>
+                                *</span>
                         </div>
                         <div class="code-line">
                             <span class="line-number">4</span>
@@ -184,23 +274,24 @@
                         </div>
                         <div class="code-line">
                             <span class="line-number">5</span>
-                            <span class="code"><span class="keyword">def</span> <span class="function">exploit_buffer_overflow</span>():</span>
+                            <span class="code"><span class="keyword">def</span> <span
+                                    class="function">exploit_buffer_overflow</span>():</span>
                         </div>
                         <div class="code-line">
                             <span class="line-number">6</span>
-                            <span class="code">    <span class="comment"># Buffer overflow exploit</span></span>
+                            <span class="code"> <span class="comment"># Buffer overflow exploit</span></span>
                         </div>
                         <div class="code-line">
                             <span class="line-number">7</span>
-                            <span class="code">    payload = <span class="string">"A" * 146</span></span>
+                            <span class="code"> payload = <span class="string">"A" * 146</span></span>
                         </div>
                         <div class="code-line">
                             <span class="line-number">8</span>
-                            <span class="code">    payload += p32(<span class="number">0xdeadbeef</span>)</span>
+                            <span class="code"> payload += p32(<span class="number">0xdeadbeef</span>)</span>
                         </div>
                         <div class="code-line">
                             <span class="line-number">9</span>
-                            <span class="code">    <span class="keyword">return</span> payload</span>
+                            <span class="code"> <span class="keyword">return</span> payload</span>
                         </div>
                     </div>
                 </div>
@@ -217,7 +308,8 @@
                         <div class="security-metric">
                             <div class="metric-circle">
                                 <svg class="progress-ring" width="60" height="60">
-                                    <circle class="progress-ring-circle" stroke="#00ff41" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                    <circle class="progress-ring-circle" stroke="#00ff41" stroke-width="4"
+                                        fill="transparent" r="26" cx="30" cy="30" />
                                 </svg>
                                 <span class="metric-value">98%</span>
                             </div>
@@ -247,7 +339,7 @@
                     <div class="profile-glow"></div>
                 </div>
             </div>
-            
+
             <div class="hero-text">
                 <h1 class="hero-title">
                     <span class="glitch-text" data-text="JOHN VARGHESE">JOHN VARGHESE</span>
@@ -257,7 +349,7 @@
                     <span class="cursor-blink">|</span>
                 </div>
                 <p class="hero-description">
-                    Elite cybersecurity specialist crafting the future of digital defense. 
+                    Elite cybersecurity specialist crafting the future of digital defense.
                     Penetration testing, ethical hacking, and innovative security solutions.
                 </p>
                 <div class="hero-buttons">
@@ -271,30 +363,30 @@
                         <i class="fas fa-code"></i>
                         <div class="btn-glow"></div>
                     </a>
-    <button class="btn-secondary" id="terminal-button">
-        <span>Open Terminal</span>
-        <i class="fas fa-terminal"></i>
-        <div class="btn-glow"></div>
-    </button>
-</div>
-<div class="terminal-window" id="terminal-window">
-    <div class="terminal-header">
-        <div class="terminal-buttons">
-            <span class="btn red"></span>
-            <span class="btn yellow"></span>
-            <span class="btn green"></span>
-        </div>
-        <span class="terminal-title">root@cyber-trinity:~$</span>
-    </div>
-    <div class="terminal-body" id="terminal-body">
-        <div class="terminal-line">
-            <span class="prompt">┌──(root㉿cyber-trinity)-[~]</span>
-        </div>
-        <div class="terminal-line">
-            <span class="prompt">└─$ </span>
-            <input type="text" class="terminal-input" id="terminal-input">
-        </div>
-    </div>
+                    <button class="btn-secondary" id="terminal-button">
+                        <span>Open Terminal</span>
+                        <i class="fas fa-terminal"></i>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+                <div class="terminal-window" id="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="btn red"></span>
+                            <span class="btn yellow"></span>
+                            <span class="btn green"></span>
+                        </div>
+                        <span class="terminal-title">root@cyber-trinity:~$</span>
+                    </div>
+                    <div class="terminal-body" id="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">┌──(root㉿cyber-trinity)-[~]</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="prompt">└─$ </span>
+                            <input type="text" class="terminal-input" id="terminal-input">
+                        </div>
+                    </div>
                 </div>
                 <div class="social-links">
                     <a href="https://github.com/John-Varghese-EH" target="_blank" class="social-link">
@@ -340,16 +432,16 @@
                     <div class="title-glow"></div>
                 </h2>
             </div>
-            
+
             <div class="about-content">
                 <div class="about-text">
                     <p class="about-intro">
-                        I'm a passionate cybersecurity enthusiast and digital innovation specialist, 
+                        I'm a passionate cybersecurity enthusiast and digital innovation specialist,
                         dedicated to creating secure and innovative solutions in the digital realm.
                     </p>
                     <p>
-                        With expertise spanning multiple programming languages and frameworks, I focus on 
-                        building robust security systems, conducting penetration testing, and exploring 
+                        With expertise spanning multiple programming languages and frameworks, I focus on
+                        building robust security systems, conducting penetration testing, and exploring
                         emerging technologies in the cybersecurity landscape.
                     </p>
                     <div class="skills-showcase">
@@ -396,19 +488,19 @@
                     <div class="title-glow"></div>
                 </h2>
             </div>
-            
+
             <div class="loading-spinner" id="loadingSpinner">
                 <div class="spinner-ring">
                     <div class="spinner-circle"></div>
                 </div>
                 <p>Scanning repositories...</p>
             </div>
-            
+
             <div class="error-message" id="errorMessage" style="display: none;">
                 <i class="fas fa-exclamation-triangle"></i>
                 <p>Unable to access repository data. Please try again later.</p>
             </div>
-            
+
             <div class="bento-container" id="bentoContainer">
                 <!-- Repository cards will be dynamically inserted here -->
             </div>
@@ -452,7 +544,7 @@
                     <div class="title-glow"></div>
                 </h2>
             </div>
-            
+
             <div class="activity-content">
                 <!-- Live Commits -->
                 <div class="commits-section">
@@ -467,7 +559,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- GitHub Contribution Activity -->
                 <div class="snake-section">
                     <h3 class="subsection-title">
@@ -475,14 +567,18 @@
                         Contribution Activity
                     </h3>
                     <h5>
-                      <i class="fas fa-gamepad"></i>
+                        <i class="fas fa-gamepad"></i>
                         Contribution Snake
                     </h5>
                     <div class="snake-container">
                         <picture>
-                            <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake-dark.svg" />
-                            <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg" />
-                            <img alt="github-snake" src="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg" class="snake-image" />
+                            <source media="(prefers-color-scheme: dark)"
+                                srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake-dark.svg" />
+                            <source media="(prefers-color-scheme: light)"
+                                srcset="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg" />
+                            <img alt="GitHub Contribution Snake Animation"
+                                src="https://raw.githubusercontent.com/John-Varghese-EH/John-Varghese-EH/output/github-snake.svg"
+                                class="snake-image" loading="lazy" />
                         </picture>
                     </div>
                 </div>
@@ -500,15 +596,15 @@
                     <div class="title-glow"></div>
                 </h2>
             </div>
-            
+
             <div class="contact-content">
                 <div class="contact-text">
                     <p>
-                        Ready to collaborate on cutting-edge cybersecurity projects? 
+                        Ready to collaborate on cutting-edge cybersecurity projects?
                         Let's connect and build the future of digital security together.
                     </p>
                 </div>
-                
+
                 <div class="contact-methods">
                     <a href="mailto:johnvarghese.work@gmail.com" class="contact-method">
                         <div class="method-icon">
@@ -519,7 +615,7 @@
                             <span>johnvarghese.work@gmail.com</span>
                         </div>
                     </a>
-                    
+
                     <a href="https://johnvarghese.netlify.app" target="_blank" class="contact-method">
                         <div class="method-icon">
                             <i class="fas fa-globe"></i>
@@ -529,7 +625,7 @@
                             <span>johnvarghese.netlify.app</span>
                         </div>
                     </a>
-                    
+
                     <a href="https://linkedin.com/in/John--Varghese" target="_blank" class="contact-method">
                         <div class="method-icon">
                             <i class="fab fa-linkedin-in"></i>
@@ -537,6 +633,16 @@
                         <div class="method-info">
                             <h4>LinkedIn</h4>
                             <span>Connect professionally</span>
+                        </div>
+                    </a>
+
+                    <a href="https://instagram.com/Cyber__Trinity" target="_blank" class="contact-method">
+                        <div class="method-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Instagram</h4>
+                            <span>@cyber__trinity</span>
                         </div>
                     </a>
                 </div>
@@ -549,25 +655,28 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-text">
-                    <p>&copy; 2025 John Varghese. Crafted with passion for cybersecurity.</p>
+                    <p>&copy; <span id="currentYear"></span> John Varghese. Crafted with passion for cybersecurity.</p>
+                </div>
+                <div class="footer-center">
+                    <a href="https://johnvarghese.netlify.app" target="_blank" class="btn-primary footer-btn">
+                        <span>View Portfolio</span>
+                        <i class="fas fa-external-link-alt"></i>
+                        <div class="btn-glow"></div>
+                    </a>
                 </div>
                 <div class="footer-links">
-                    <a href="https://github.com/John-Varghese-EH" target="_blank">
+                    <a href="https://github.com/John-Varghese-EH" target="_blank" aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="https://linkedin.com/in/John--Varghese" target="_blank">
+                    <a href="https://linkedin.com/in/John--Varghese" target="_blank" aria-label="LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="https://instagram.com/Cyber__Trinity" target="_blank">
+                    <a href="https://instagram.com/Cyber__Trinity" target="_blank" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://youtube.com/@Trendy_NED" target="_blank">
+                    <a href="https://youtube.com/@Trendy_NED" target="_blank" aria-label="YouTube">
                         <i class="fab fa-youtube"></i>
                     </a>
-    <a href="https://johnvarghese.netlify.app" target="_blank" class="btn-primary">
-        <span>View Portfolio</span>
-        <i class="fas fa-external-link-alt"></i>
-    </a>
                 </div>
             </div>
         </div>
@@ -575,4 +684,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

@@ -31,10 +31,42 @@ const typingTexts = [
 // Initialize application
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
+    initButtonRipples();
 });
+
+// Button Ripple Effect
+function initButtonRipples() {
+    const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            const rect = button.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+            ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+            ripple.classList.add('ripple');
+
+            button.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+}
 
 async function initializeApp() {
     try {
+        // Set dynamic copyright year
+        const yearElement = document.getElementById('currentYear');
+        if (yearElement) {
+            yearElement.textContent = new Date().getFullYear();
+        }
+
+        // Initialize scroll progress indicator
+        initScrollProgress();
+
         // Initialize all components
         await Promise.all([
             initTypingAnimation(),
@@ -44,25 +76,63 @@ async function initializeApp() {
             initScrollAnimations(),
             loadGitHubData()
         ]);
-        
+
+        // Hide page loader
+        const pageLoader = document.getElementById('pageLoader');
+        if (pageLoader) {
+            pageLoader.classList.add('hidden');
+            // Remove from DOM after transition
+            setTimeout(() => {
+                pageLoader.remove();
+            }, 500);
+        }
+
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Error initializing application:', error);
+        // Still hide loader on error
+        const pageLoader = document.getElementById('pageLoader');
+        if (pageLoader) {
+            pageLoader.classList.add('hidden');
+        }
     }
+}
+
+// Scroll Progress Indicator
+function initScrollProgress() {
+    const scrollProgress = document.querySelector('.scroll-progress');
+    if (!scrollProgress) return;
+
+    let ticking = false;
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(updateProgress);
+            ticking = true;
+        }
+    }, { passive: true });
 }
 
 // Typing Animation
 function initTypingAnimation() {
     const typingElement = document.querySelector('.typing-text');
     if (!typingElement) return;
-    
+
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
-    
+
     function typeText() {
         const currentText = typingTexts[textIndex];
-        
+
         if (isDeleting) {
             typingElement.textContent = currentText.substring(0, charIndex - 1);
             charIndex--;
@@ -70,9 +140,9 @@ function initTypingAnimation() {
             typingElement.textContent = currentText.substring(0, charIndex + 1);
             charIndex++;
         }
-        
+
         let typeSpeed = isDeleting ? 50 : 100;
-        
+
         if (!isDeleting && charIndex === currentText.length) {
             typeSpeed = 2000; // Pause at end
             isDeleting = true;
@@ -81,62 +151,62 @@ function initTypingAnimation() {
             textIndex = (textIndex + 1) % typingTexts.length;
             typeSpeed = 500; // Pause before next text
         }
-        
+
         setTimeout(typeText, typeSpeed);
     }
-    
+
     typeText();
 }
 
 // Custom Cursor Trail
 function initCursorTrail() {
     if (window.innerWidth <= 768) return; // Disable on mobile
-    
+
     const cursorTrail = document.querySelector('.cursor-trail');
     const cursorGlow = document.querySelector('.cursor-glow');
-    
+
     if (!cursorTrail || !cursorGlow) return;
-    
+
     let mouseX = 0;
     let mouseY = 0;
     let trailX = 0;
     let trailY = 0;
     let glowX = 0;
     let glowY = 0;
-    
+
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
     });
-    
+
     function animateCursor() {
         // Smooth trail following
         trailX += (mouseX - trailX) * 0.3;
         trailY += (mouseY - trailY) * 0.3;
-        
+
         glowX += (mouseX - glowX) * 0.15;
         glowY += (mouseY - glowY) * 0.15;
-        
+
         cursorTrail.style.left = trailX + 'px';
         cursorTrail.style.top = trailY + 'px';
-        
+
         cursorGlow.style.left = glowX + 'px';
         cursorGlow.style.top = glowY + 'px';
-        
+
         requestAnimationFrame(animateCursor);
     }
-    
+
     animateCursor();
-    
+
     // Cursor interactions
     const interactiveElements = document.querySelectorAll('a, button, .repo-card, .social-link');
-    
+
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', () => {
             cursorTrail.style.transform = 'scale(1.5)';
             cursorGlow.style.transform = 'scale(2)';
         });
-        
+
         element.addEventListener('mouseleave', () => {
             cursorTrail.style.transform = 'scale(1)';
             cursorGlow.style.transform = 'scale(1)';
@@ -148,79 +218,109 @@ function initCursorTrail() {
 function initMatrixBackground() {
     const canvas = document.getElementById('matrixCanvas');
     if (!canvas) return;
-    
+
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        canvas.style.display = 'none';
+        return;
+    }
+
     const ctx = canvas.getContext('2d');
-    
+    let animationId;
+    let lastTime = 0;
+    const fps = 30; // Limit to 30fps for performance
+    const fpsInterval = 1000 / fps;
+
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    
+
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
+
+    // Debounced resize handler
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(resizeCanvas, 100);
+    });
+
     const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
     const matrixArray = matrix.split("");
-    
+
     const fontSize = 10;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-    
-    for (let x = 0; x < columns; x++) {
-        drops[x] = 1;
-    }
-    
-    function drawMatrix() {
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = new Array(columns).fill(1);
+
+    function drawMatrix(currentTime) {
+        animationId = requestAnimationFrame(drawMatrix);
+
+        // Limit frame rate for performance
+        const elapsed = currentTime - lastTime;
+        if (elapsed < fpsInterval) return;
+        lastTime = currentTime - (elapsed % fpsInterval);
+
         ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         ctx.fillStyle = '#00ff41';
         ctx.font = fontSize + 'px monospace';
-        
+
         for (let i = 0; i < drops.length; i++) {
             const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            
+
             if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                 drops[i] = 0;
             }
             drops[i]++;
         }
     }
-    
-    setInterval(drawMatrix, 35);
+
+    // Start animation
+    animationId = requestAnimationFrame(drawMatrix);
+
+    // Pause animation when tab is hidden for performance
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            cancelAnimationFrame(animationId);
+        } else {
+            lastTime = 0;
+            animationId = requestAnimationFrame(drawMatrix);
+        }
+    });
 }
 
 // Floating Elements Animation
 function initFloatingElements() {
     const floatingElements = document.querySelectorAll('[data-speed]');
-    
+
     if (window.innerWidth <= 1200) return; // Disable on smaller screens
-    
+
     function animateFloatingElements() {
         floatingElements.forEach(element => {
             const speed = parseFloat(element.dataset.speed) || 0.5;
             const rect = element.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            
+
             const mouseX = window.mouseX || window.innerWidth / 2;
             const mouseY = window.mouseY || window.innerHeight / 2;
-            
+
             const deltaX = (mouseX - centerX) * speed * 0.01;
             const deltaY = (mouseY - centerY) * speed * 0.01;
-            
+
             element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
         });
-        
+
         requestAnimationFrame(animateFloatingElements);
     }
-    
+
     document.addEventListener('mousemove', (e) => {
         window.mouseX = e.clientX;
         window.mouseY = e.clientY;
     });
-    
+
     animateFloatingElements();
 }
 
@@ -230,13 +330,13 @@ function initScrollAnimations() {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
-                
+
                 // Add staggered animation for child elements
                 const children = entry.target.querySelectorAll('.skill-category, .repo-card, .commit-item');
                 children.forEach((child, index) => {
@@ -248,7 +348,7 @@ function initScrollAnimations() {
             }
         });
     }, observerOptions);
-    
+
     // Observe sections
     document.querySelectorAll('section').forEach(section => {
         section.style.opacity = '0';
@@ -256,7 +356,7 @@ function initScrollAnimations() {
         section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
         observer.observe(section);
     });
-    
+
     // Observe individual elements
     document.querySelectorAll('.skill-category, .repo-card').forEach(element => {
         element.style.opacity = '0';
@@ -310,19 +410,19 @@ async function loadGitHubData() {
 async function loadRepositories() {
     try {
         showLoading();
-        
+
         // Check cache first
         const cachedRepos = getCachedData(CACHE_KEYS.repos);
         if (cachedRepos) {
             showRepositories(cachedRepos);
             return;
         }
-        
+
         const response = await fetch(REPOS_API_URL);
         if (!response.ok) {
             throw new Error(`GitHub API error: ${response.status}`);
         }
-        
+
         const repos = await response.json();
         const filteredRepos = repos
             .filter(repo => !repo.fork)
@@ -333,10 +433,10 @@ async function loadRepositories() {
                 return new Date(b.updated_at) - new Date(a.updated_at);
             })
             .slice(0, 12);
-        
+
         setCachedData(CACHE_KEYS.repos, filteredRepos);
         showRepositories(filteredRepos);
-        
+
     } catch (error) {
         console.error('Error loading repositories:', error);
         showError('Unable to load repositories. Please try again later.');
@@ -362,22 +462,22 @@ function showRepositories(repos) {
     if (loadingSpinner) loadingSpinner.style.display = 'none';
     if (errorMessage) errorMessage.style.display = 'none';
     if (bentoContainer) bentoContainer.style.display = 'grid';
-    
+
     bentoContainer.innerHTML = '';
-    
+
     repos.forEach((repo, index) => {
         const card = createRepoCard(repo);
-        
+
         // Add staggered animation
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
-        
+
         setTimeout(() => {
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
         }, index * 100);
-        
+
         bentoContainer.appendChild(card);
     });
 }
@@ -385,7 +485,7 @@ function showRepositories(repos) {
 function createRepoCard(repo) {
     const card = document.createElement('div');
     card.className = 'repo-card';
-    
+
     // Random grid span for Bento effect
     const randomSpan = Math.random();
     if (randomSpan > 0.7) {
@@ -393,9 +493,9 @@ function createRepoCard(repo) {
     } else if (randomSpan > 0.85) {
         card.style.gridColumn = 'span 2';
     }
-    
+
     const languageColor = getLanguageColor(repo.language);
-    
+
     card.innerHTML = `
         <div class="repo-header">
             <img src="${repo.owner.avatar_url}" alt="${repo.owner.login}" class="repo-avatar">
@@ -429,18 +529,18 @@ function createRepoCard(repo) {
         </div>
         ${repo.language ? `<span class="repo-language" style="background-color: ${languageColor}20; color: ${languageColor}; border: 1px solid ${languageColor}40;">${repo.language}</span>` : ''}
     `;
-    
+
     // Add 3D hover effect and laptop content update
     card.addEventListener('mouseenter', () => {
         updateProjectLaptop(repo.name);
         card.addEventListener('mousemove', handleMouseMove);
     });
-    
+
     card.addEventListener('mouseleave', () => {
         card.removeEventListener('mousemove', handleMouseMove);
         card.style.transform = '';
     });
-    
+
     // Show project description on click
     card.addEventListener('click', () => {
         showProjectDescription(repo);
@@ -450,13 +550,13 @@ function createRepoCard(repo) {
         const rect = card.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         const rotateX = (e.clientY - centerY) / 10;
         const rotateY = (centerX - e.clientX) / 10;
-        
+
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
     }
-    
+
     return card;
 }
 
@@ -500,12 +600,12 @@ async function loadRecentCommits() {
             showCommits(cachedCommits);
             return;
         }
-        
+
         const response = await fetch(EVENTS_API_URL);
         if (!response.ok) {
             throw new Error(`GitHub API error: ${response.status}`);
         }
-        
+
         const events = await response.json();
         const pushEvents = events
             .filter(event => event.type === 'PushEvent' && event.payload.commits.length > 0)
@@ -519,10 +619,10 @@ async function loadRecentCommits() {
             })))
             .filter(commit => !commit.message.toLowerCase().includes('readme') && !commit.message.toLowerCase().includes('license') && commit.author.toLowerCase() !== 'jules')
             .slice(0, 10);
-        
+
         setCachedData(CACHE_KEYS.commits, pushEvents);
         showCommits(pushEvents);
-        
+
     } catch (error) {
         console.error('Error loading commits:', error);
         showCommitsError();
@@ -531,20 +631,20 @@ async function loadRecentCommits() {
 
 function showCommits(commits) {
     if (!commitsContainer) return;
-    
+
     commitsContainer.innerHTML = '';
-    
+
     if (commits.length === 0) {
         commitsContainer.innerHTML = '<p style="text-align: center; color: var(--text-gray);">No recent commits found.</p>';
         return;
     }
-    
+
     commits.forEach((commit, index) => {
         const commitElement = document.createElement('div');
         commitElement.className = 'commit-item';
         commitElement.style.opacity = '0';
         commitElement.style.transform = 'translateX(-20px)';
-        
+
         commitElement.innerHTML = `
             <img src="${commit.avatar}" alt="${commit.author}" class="commit-avatar">
             <div class="commit-info">
@@ -555,20 +655,20 @@ function showCommits(commits) {
                 </div>
             </div>
         `;
-        
+
         setTimeout(() => {
             commitElement.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             commitElement.style.opacity = '1';
             commitElement.style.transform = 'translateX(0)';
         }, index * 100);
-        
+
         commitsContainer.appendChild(commitElement);
     });
 }
 
 function showCommitsError() {
     if (!commitsContainer) return;
-    
+
     commitsContainer.innerHTML = `
         <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
             <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem; color: #ff6b6b;"></i>
@@ -585,13 +685,13 @@ async function loadContributions() {
             showContributions(cachedContributions);
             return;
         }
-        
+
         // Generate mock contribution data (GitHub API doesn't provide contribution graph data)
         const contributions = generateMockContributions();
-        
+
         setCachedData(CACHE_KEYS.contributions, contributions);
         showContributions(contributions);
-        
+
     } catch (error) {
         console.error('Error loading contributions:', error);
         showContributionsError();
@@ -602,7 +702,7 @@ function generateMockContributions() {
     const contributions = [];
     const today = new Date();
     const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-    
+
     for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
         const level = Math.random() > 0.7 ? Math.floor(Math.random() * 5) : 0;
         contributions.push({
@@ -611,16 +711,16 @@ function generateMockContributions() {
             level: level
         });
     }
-    
+
     return contributions;
 }
 
 function showContributions(contributions) {
     if (!contributionGraph) return;
-    
+
     const totalContributions = contributions.reduce((sum, day) => sum + day.count, 0);
     const currentStreak = calculateStreak(contributions);
-    
+
     contributionGraph.innerHTML = `
         <div class="contribution-stats">
             <div class="stat-item">
@@ -649,18 +749,18 @@ function showContributions(contributions) {
             <span>More</span>
         </div>
     `;
-    
+
     const grid = document.getElementById('contributionGrid');
     contributions.forEach((day, index) => {
         const dayElement = document.createElement('div');
         dayElement.className = `contribution-day level-${day.level}`;
         dayElement.title = `${day.count} contributions on ${day.date}`;
-        
+
         setTimeout(() => {
             dayElement.style.opacity = '1';
             dayElement.style.transform = 'scale(1)';
         }, index * 2);
-        
+
         grid.appendChild(dayElement);
     });
 }
@@ -679,7 +779,7 @@ function calculateStreak(contributions) {
 
 function showContributionsError() {
     if (!contributionGraph) return;
-    
+
     contributionGraph.innerHTML = `
         <div style="text-align: center; padding: 3rem; color: var(--text-gray);">
             <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem; color: #ff6b6b;"></i>
@@ -736,7 +836,7 @@ document.addEventListener('visibilitychange', () => {
         // Refresh data when tab becomes active
         const lastUpdate = localStorage.getItem('last_update');
         const now = Date.now();
-        
+
         if (!lastUpdate || now - parseInt(lastUpdate) > CACHE_DURATION) {
             loadGitHubData();
             localStorage.setItem('last_update', now.toString());
