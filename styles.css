@@ -1752,6 +1752,142 @@ button:focus-visible {
 }
 
 /* Activity Section */
+
+/* Section Header with Refresh Button */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    color: var(--primary-green);
+    padding: 0.6rem 1.2rem;
+    border-radius: 2rem;
+    font-family: var(--font-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.refresh-btn:hover {
+    background: var(--primary-green);
+    color: var(--bg-dark);
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px var(--shadow-green);
+}
+
+.refresh-btn:hover i {
+    animation: spin 1s linear infinite;
+}
+
+.refresh-btn:active {
+    transform: scale(0.95);
+}
+
+/* GitHub Stats Container */
+.github-stats-container {
+    margin-bottom: 3rem;
+}
+
+.github-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(0, 255, 65, 0.2);
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-green);
+    box-shadow: 0 10px 30px var(--shadow-green);
+}
+
+.stat-item i {
+    font-size: 1.8rem;
+    color: var(--primary-green);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-light);
+    font-family: var(--font-primary);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Skeleton Loading */
+.stat-item.skeleton {
+    background: var(--bg-card);
+}
+
+.skeleton-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.1) 25%, rgba(0, 255, 65, 0.2) 50%, rgba(0, 255, 65, 0.1) 75%);
+    background-size: 200% 100%;
+    border-radius: 50%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text {
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.1) 25%, rgba(0, 255, 65, 0.2) 50%, rgba(0, 255, 65, 0.1) 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Commit Count Badge */
+.commit-count {
+    font-size: 0.9rem;
+    background: var(--primary-green);
+    color: var(--bg-dark);
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    margin-left: auto;
+    font-weight: 600;
+}
+
 .activity-content {
     display: grid;
     grid-template-columns: 1fr;
@@ -1817,39 +1953,111 @@ button:focus-visible {
     padding: 1rem;
     border-bottom: 1px solid rgba(0, 255, 65, 0.1);
     transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
 }
 
 .commit-item:hover {
-    background: rgba(0, 255, 65, 0.05);
+    background: rgba(0, 255, 65, 0.08);
     transform: translateX(10px);
+    border-color: var(--primary-green);
+}
+
+.commit-item:last-child {
+    border-bottom: none;
 }
 
 .commit-avatar {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 2px solid var(--primary-green);
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.commit-item:hover .commit-avatar {
+    box-shadow: 0 0 15px var(--shadow-green);
+    transform: scale(1.1);
 }
 
 .commit-info {
     flex: 1;
+    min-width: 0;
 }
 
 .commit-message {
     color: var(--text-light);
     font-weight: 600;
     margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .commit-details {
     display: flex;
-    gap: 1rem;
-    font-size: 0.9rem;
+    gap: 1.5rem;
+    font-size: 0.85rem;
     color: var(--text-gray);
+    flex-wrap: wrap;
+}
+
+.commit-details i {
+    margin-right: 0.3rem;
+    font-size: 0.75rem;
 }
 
 .commit-repo {
     color: var(--primary-green);
+    font-weight: 500;
+}
+
+.commit-time {
+    color: var(--text-dim);
+}
+
+.commit-link-icon {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.commit-item:hover .commit-link-icon {
+    opacity: 1;
+    color: var(--primary-green);
+}
+
+/* No Commits State */
+.no-commits {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-gray);
+}
+
+.no-commits i {
+    font-size: 3rem;
+    color: var(--primary-green);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.no-commits p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.no-commits span {
+    font-size: 0.9rem;
+    color: var(--text-dim);
 }
 
 .contributions-section {

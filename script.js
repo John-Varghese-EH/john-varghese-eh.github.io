@@ -393,16 +393,93 @@ function setCachedData(key, data) {
     }
 }
 
+// Clear all GitHub cache
+function clearGitHubCache() {
+    Object.values(CACHE_KEYS).forEach(key => {
+        localStorage.removeItem(key);
+    });
+    console.log('GitHub cache cleared');
+}
+
+// Refresh GitHub data (clear cache and reload)
+async function refreshGitHubData() {
+    clearGitHubCache();
+
+    // Show loading states
+    if (bentoContainer) {
+        bentoContainer.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner-ring">
+                    <div class="spinner-circle"></div>
+                </div>
+                <span>Refreshing data...</span>
+            </div>
+        `;
+    }
+    if (commitsContainer) {
+        commitsContainer.innerHTML = `
+            <div class="loading-commits">
+                <div class="pulse-dot"></div>
+                <span>Refreshing commits...</span>
+            </div>
+        `;
+    }
+
+    await loadGitHubData();
+}
+
+// Expose refresh function globally
+window.refreshGitHubData = refreshGitHubData;
+
 // GitHub Data Loading
 async function loadGitHubData() {
     try {
         await Promise.all([
             loadRepositories(),
             loadRecentCommits(),
-            loadContributions()
+            loadContributions(),
+            loadGitHubStats()
         ]);
     } catch (error) {
         console.error('Error loading GitHub data:', error);
+    }
+}
+
+// GitHub Profile Stats
+async function loadGitHubStats() {
+    const statsContainer = document.getElementById('githubStats');
+    if (!statsContainer) return;
+
+    try {
+        const response = await fetch(GITHUB_API_URL);
+        if (!response.ok) throw new Error('Failed to fetch stats');
+
+        const user = await response.json();
+
+        statsContainer.innerHTML = `
+            <div class="stat-item">
+                <i class="fas fa-folder"></i>
+                <span class="stat-value">${user.public_repos}</span>
+                <span class="stat-label">Repositories</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <span class="stat-value">${user.followers}</span>
+                <span class="stat-label">Followers</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-user-plus"></i>
+                <span class="stat-value">${user.following}</span>
+                <span class="stat-label">Following</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-code-branch"></i>
+                <span class="stat-value">${user.public_gists || 0}</span>
+                <span class="stat-label">Gists</span>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error loading GitHub stats:', error);
     }
 }
 
@@ -596,7 +673,7 @@ function showProjectDescription(repo) {
 async function loadRecentCommits() {
     try {
         const cachedCommits = getCachedData(CACHE_KEYS.commits);
-        if (cachedCommits) {
+        if (cachedCommits && cachedCommits.length > 0) {
             showCommits(cachedCommits);
             return;
         }
@@ -607,20 +684,45 @@ async function loadRecentCommits() {
         }
 
         const events = await response.json();
+
+        // Check if events is an array
+        if (!Array.isArray(events)) {
+            throw new Error('Invalid response from GitHub API');
+        }
+
         const pushEvents = events
-            .filter(event => event.type === 'PushEvent' && event.payload.commits.length > 0)
+            .filter(event => {
+                // Safe check for PushEvent with commits
+                return event.type === 'PushEvent' &&
+                    event.payload &&
+                    Array.isArray(event.payload.commits) &&
+                    event.payload.commits.length > 0;
+            })
             .flatMap(event => event.payload.commits.map(commit => ({
                 id: commit.sha,
                 repo: event.repo.name,
-                message: commit.message,
+                repoUrl: `https://github.com/${event.repo.name}`,
+                commitUrl: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
+                message: commit.message.split('\n')[0], // Only first line
                 date: event.created_at,
                 avatar: event.actor.avatar_url,
                 author: event.actor.login
             })))
-            .filter(commit => !commit.message.toLowerCase().includes('readme') && !commit.message.toLowerCase().includes('license') && commit.author.toLowerCase() !== 'jules')
-            .slice(0, 10);
+            .filter(commit => {
+                const msg = commit.message.toLowerCase();
+                const author = commit.author.toLowerCase();
+                // Filter out readme/license updates and bot commits
+                return !msg.includes('readme') &&
+                    !msg.includes('license') &&
+                    !msg.includes('merge') &&
+                    author !== 'jules' &&
+                    !author.includes('bot');
+            })
+            .slice(0, 15);
 
-        setCachedData(CACHE_KEYS.commits, pushEvents);
+        if (pushEvents.length > 0) {
+            setCachedData(CACHE_KEYS.commits, pushEvents);
+        }
         showCommits(pushEvents);
 
     } catch (error) {
@@ -634,26 +736,46 @@ function showCommits(commits) {
 
     commitsContainer.innerHTML = '';
 
-    if (commits.length === 0) {
-        commitsContainer.innerHTML = '<p style="text-align: center; color: var(--text-gray);">No recent commits found.</p>';
+    if (!commits || commits.length === 0) {
+        commitsContainer.innerHTML = `
+            <div class="no-commits">
+                <i class="fas fa-code-branch"></i>
+                <p>No recent commits found</p>
+                <span>Check back later for updates</span>
+            </div>
+        `;
         return;
     }
 
     commits.forEach((commit, index) => {
-        const commitElement = document.createElement('div');
+        const commitElement = document.createElement('a');
+        commitElement.href = commit.commitUrl || '#';
+        commitElement.target = '_blank';
+        commitElement.rel = 'noopener noreferrer';
         commitElement.className = 'commit-item';
         commitElement.style.opacity = '0';
         commitElement.style.transform = 'translateX(-20px)';
 
+        // Truncate long messages
+        const message = commit.message.length > 60
+            ? commit.message.substring(0, 60) + '...'
+            : commit.message;
+
+        // Get repo short name
+        const repoName = commit.repo.includes('/')
+            ? commit.repo.split('/')[1]
+            : commit.repo;
+
         commitElement.innerHTML = `
-            <img src="${commit.avatar}" alt="${commit.author}" class="commit-avatar">
+            <img src="${commit.avatar}" alt="${commit.author}" class="commit-avatar" loading="lazy">
             <div class="commit-info">
-                <div class="commit-message">${commit.message}</div>
+                <div class="commit-message">${message}</div>
                 <div class="commit-details">
-                    <span class="commit-repo">${commit.repo}</span>
-                    <span>${formatDate(commit.date)}</span>
+                    <span class="commit-repo"><i class="fas fa-folder"></i> ${repoName}</span>
+                    <span class="commit-time"><i class="fas fa-clock"></i> ${formatDate(commit.date)}</span>
                 </div>
             </div>
+            <i class="fas fa-external-link-alt commit-link-icon"></i>
         `;
 
         setTimeout(() => {

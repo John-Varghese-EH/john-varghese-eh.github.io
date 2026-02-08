@@ -543,6 +543,32 @@
                     GitHub Activity
                     <div class="title-glow"></div>
                 </h2>
+                <button class="refresh-btn" onclick="refreshGitHubData()" title="Refresh GitHub data">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+
+            <!-- GitHub Profile Stats -->
+            <div class="github-stats-container">
+                <div class="github-stats" id="githubStats">
+                    <div class="stat-item skeleton">
+                        <div class="skeleton-icon"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                    <div class="stat-item skeleton">
+                        <div class="skeleton-icon"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                    <div class="stat-item skeleton">
+                        <div class="skeleton-icon"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                    <div class="stat-item skeleton">
+                        <div class="skeleton-icon"></div>
+                        <div class="skeleton-text"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="activity-content">
@@ -551,6 +577,7 @@
                     <h3 class="subsection-title">
                         <i class="fas fa-code-branch"></i>
                         Recent Commits
+                        <span class="commit-count" id="commitCount"></span>
                     </h3>
                     <div class="commits-container" id="commitsContainer">
                         <div class="loading-commits">
